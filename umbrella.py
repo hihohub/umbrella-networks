@@ -1,3 +1,23 @@
+import os
+import sys
+import numpy as np
+import math
+import random
+from PIL import Image, ImageOps, ImageChops
+import cv2
+import tensorflow as tf
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.models import Sequential, Model, load_model
+from tensorflow.keras.layers import Input, Conv2D, MaxPool2D, Flatten, Dense, add, BatchNormalization, Dropout, AveragePooling2D, GlobalAveragePooling2D, SeparableConv2D
+from tensorflow.keras.utils import to_categorical
+from tensorflow.python.framework.ops import disable_eager_execution
+from tensorflow.keras import backend as backend
+from keras.callbacks import ReduceLROnPlateau
+from sklearn.utils import shuffle
+import matplotlib.pyplot as plt
+import pickle
+import copy
+import time
 
 # author Derek James Smith
 # derekjsmit@gmail.com
@@ -5,26 +25,6 @@
 class Joint_Probability_Network(object):
 
   def __init__(self,network_type,images_folder,serial_file,models_folder,target_image_size,channels,levels,valid_ratio,test_ratio,initialize_now):
-    import os
-    import sys
-    import numpy as np
-    import math
-    import random
-    from PIL import Image, ImageOps, ImageChops
-    import cv2
-    import tensorflow as tf
-    from tensorflow.keras.preprocessing import image
-    from tensorflow.keras.models import Sequential, Model, load_model
-    from tensorflow.keras.layers import Input, Conv2D, MaxPool2D, Flatten, Dense, add, BatchNormalization, Dropout, AveragePooling2D, GlobalAveragePooling2D, SeparableConv2D
-    from tensorflow.keras.utils import to_categorical
-    from tensorflow.python.framework.ops import disable_eager_execution
-    from tensorflow.keras import backend as backend
-    from keras.callbacks import ReduceLROnPlateau
-    from sklearn.utils import shuffle
-    import matplotlib.pyplot as plt
-    import pickle
-    import copy
-    import time
     self.map = []
     network_type = "softmax"
     levels = 1
@@ -171,26 +171,6 @@ class Joint_Probability_Network(object):
 
 class Umbrella_Label(object):
   def __init__(self):
-    import os
-    import sys
-    import numpy as np
-    import math
-    import random
-    from PIL import Image, ImageOps, ImageChops
-    import cv2
-    import tensorflow as tf
-    from tensorflow.keras.preprocessing import image
-    from tensorflow.keras.models import Sequential, Model, load_model
-    from tensorflow.keras.layers import Input, Conv2D, MaxPool2D, Flatten, Dense, add, BatchNormalization, Dropout, AveragePooling2D, GlobalAveragePooling2D, SeparableConv2D
-    from tensorflow.keras.utils import to_categorical
-    from tensorflow.python.framework.ops import disable_eager_execution
-    from tensorflow.keras import backend as backend
-    from keras.callbacks import ReduceLROnPlateau
-    from sklearn.utils import shuffle
-    import matplotlib.pyplot as plt
-    import pickle
-    import copy
-    import time
     self.probability = []
     self.name = ""
     self.children = []
@@ -198,26 +178,6 @@ class Umbrella_Label(object):
 
 class Umbrella_Node(object):
   def __init__(self,path,parent):
-    import os
-    import sys
-    import numpy as np
-    import math
-    import random
-    from PIL import Image, ImageOps, ImageChops
-    import cv2
-    import tensorflow as tf
-    from tensorflow.keras.preprocessing import image
-    from tensorflow.keras.models import Sequential, Model, load_model
-    from tensorflow.keras.layers import Input, Conv2D, MaxPool2D, Flatten, Dense, add, BatchNormalization, Dropout, AveragePooling2D, GlobalAveragePooling2D, SeparableConv2D
-    from tensorflow.keras.utils import to_categorical
-    from tensorflow.python.framework.ops import disable_eager_execution
-    from tensorflow.keras import backend as backend
-    from keras.callbacks import ReduceLROnPlateau
-    from sklearn.utils import shuffle
-    import matplotlib.pyplot as plt
-    import pickle
-    import copy
-    import time
     self.path = path
     if self.path != None:
       self.name = self.path[self.path.rfind("/") + 1 :]
@@ -253,26 +213,6 @@ class Umbrella_Network(object):
     print("network = Umbrella_Network(network_type,images_folder,serial_file,models_folder,target_image_size,channels,levels,valid_ratio,test_ratio,multilabel,initialize_now)\n")
 
   def __init__(self,network_type,images_folder,serial_file,models_folder,target_image_size,channels,levels,valid_ratio,test_ratio,initialize_now,multilabel=False):
-    import os
-    import sys
-    import numpy as np
-    import math
-    import random
-    from PIL import Image, ImageOps, ImageChops
-    import cv2
-    import tensorflow as tf
-    from tensorflow.keras.preprocessing import image
-    from tensorflow.keras.models import Sequential, Model, load_model
-    from tensorflow.keras.layers import Input, Conv2D, MaxPool2D, Flatten, Dense, add, BatchNormalization, Dropout, AveragePooling2D, GlobalAveragePooling2D, SeparableConv2D
-    from tensorflow.keras.utils import to_categorical
-    from tensorflow.python.framework.ops import disable_eager_execution
-    from tensorflow.keras import backend as backend
-    from keras.callbacks import ReduceLROnPlateau
-    from sklearn.utils import shuffle
-    import matplotlib.pyplot as plt
-    import pickle
-    import copy
-    import time
     if network_type==None or serial_file==None or models_folder==None or target_image_size==None or channels==None or levels==None or valid_ratio==None or test_ratio==None or multilabel==None or initialize_now==None:
       print("error - missing constructor parameters")
       self.instructions()
