@@ -1,26 +1,23 @@
-def install():
-   import os
-   import sys
-   import numpy as np
-   import math
-   import random
-   from PIL import Image, ImageOps, ImageChops
-   import cv2
-   import tensorflow as tf
-   from tensorflow.keras.preprocessing import image
-   from tensorflow.keras.models import Sequential, Model, load_model
-   from tensorflow.keras.layers import Input, Conv2D, MaxPool2D, Flatten, Dense, add, BatchNormalization, Dropout, AveragePooling2D, GlobalAveragePooling2D, SeparableConv2D
-   from tensorflow.keras.utils import to_categorical
-   from tensorflow.python.framework.ops import disable_eager_execution
-   from tensorflow.keras import backend as backend
-   from keras.callbacks import ReduceLROnPlateau
-   from sklearn.utils import shuffle
-   import matplotlib.pyplot as plt
-   import pickle
-   import copy
-   import time
-
-install()
+import os
+import sys
+import numpy as np
+import math
+import random
+from PIL import Image, ImageOps, ImageChops
+import cv2
+import tensorflow as tf
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.models import Sequential, Model, load_model
+from tensorflow.keras.layers import Input, Conv2D, MaxPool2D, Flatten, Dense, add, BatchNormalization, Dropout, AveragePooling2D, GlobalAveragePooling2D, SeparableConv2D
+from tensorflow.keras.utils import to_categorical
+from tensorflow.python.framework.ops import disable_eager_execution
+from tensorflow.keras import backend as backend
+from keras.callbacks import ReduceLROnPlateau
+from sklearn.utils import shuffle
+import matplotlib.pyplot as plt
+import pickle
+import copy
+import time
 
 # author Derek James Smith
 # derekjsmit@gmail.com
