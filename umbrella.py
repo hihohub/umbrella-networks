@@ -118,24 +118,32 @@ class Joint_Probability_Network(object):
     result = [math.exp(x) / summation for x in y]
     return result
 
-  def predict_validation_set(self):
+  def predict_validation_set(self,verbose=False):
     print("validation accuracy")
     valid_specialist,predicted_specialist = self.predict_set(self.specialist,self.specialist.validation_set);
     valid_general,predicted_general = self.predict_set(self.generalist,self.generalist.validation_set);
     print("specialist")
     es = [list(valid_specialist[j].probability) for j in range(0,len(valid_specialist))]
-    print("expected %s" % str(es))
+    if(verbose==True){
+       print("expected %s" % str(es))
+    }
     ps = [list(predicted_specialist[j].probability) for j in range(0,len(predicted_specialist))]
     ps = [self.softmax_vector(ps[j]) for j in range(0,len(ps))]
-    print("predicted %s" % str(ps))
+    if(verbose==True){
+       print("predicted %s" % str(ps))
+    }
     print("accuracy %.3f" % self.accuracy(es,ps))
     #self.specialist.traverse_validation_labels()
     print("generalist")
     expected = [list(valid_general[j].probability) for j in range(0,len(valid_general))]
-    print("expected %s" % str(expected))
+    if(verbose==True){
+       print("expected %s" % str(expected))
+    }
     pg = [list(predicted_general[j].probability) for j in range(0,len(predicted_general))]
     pg = [self.softmax_vector(pg[j]) for j in range(0,len(pg))]
-    print("predicted %s" % str(pg))
+    if(verbose==True){
+       print("predicted %s" % str(pg))
+    }
     print("accuracy %.3f" % self.accuracy(expected,pg))
     #self.generalist.traverse_validation_labels()
     #print("map")
@@ -160,8 +168,10 @@ class Joint_Probability_Network(object):
     #print(str(pg))
     #print("divided by expanded specialist predictions")
     #print(str(list(expanded)))
-    print("expected %s" % str(expected))
-    print("predicted %s" % str(predicted))
+    if(verbose==True){
+       print("expected %s" % str(expected))
+       print("predicted %s" % str(predicted))
+    }
     print("accuracy %.3f" % self.accuracy(expected,predicted))
 
   def predict_set(self,model,someset):
