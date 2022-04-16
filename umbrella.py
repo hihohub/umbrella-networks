@@ -124,26 +124,22 @@ class Joint_Probability_Network(object):
     valid_general,predicted_general = self.predict_set(self.generalist,self.generalist.validation_set);
     print("specialist")
     es = [list(valid_specialist[j].probability) for j in range(0,len(valid_specialist))]
-    if(verbose==True){
+    if verbose==True:
        print("expected %s" % str(es))
-    }
     ps = [list(predicted_specialist[j].probability) for j in range(0,len(predicted_specialist))]
     ps = [self.softmax_vector(ps[j]) for j in range(0,len(ps))]
-    if(verbose==True){
+    if verbose==True:
        print("predicted %s" % str(ps))
-    }
     print("accuracy %.3f" % self.accuracy(es,ps))
     #self.specialist.traverse_validation_labels()
     print("generalist")
     expected = [list(valid_general[j].probability) for j in range(0,len(valid_general))]
-    if(verbose==True){
+    if verbose==True:
        print("expected %s" % str(expected))
-    }
     pg = [list(predicted_general[j].probability) for j in range(0,len(predicted_general))]
     pg = [self.softmax_vector(pg[j]) for j in range(0,len(pg))]
-    if(verbose==True){
+    if verbose==True:
        print("predicted %s" % str(pg))
-    }
     print("accuracy %.3f" % self.accuracy(expected,pg))
     #self.generalist.traverse_validation_labels()
     #print("map")
@@ -168,10 +164,9 @@ class Joint_Probability_Network(object):
     #print(str(pg))
     #print("divided by expanded specialist predictions")
     #print(str(list(expanded)))
-    if(verbose==True){
+    if verbose==True:
        print("expected %s" % str(expected))
        print("predicted %s" % str(predicted))
-    }
     print("accuracy %.3f" % self.accuracy(expected,predicted))
 
   def predict_set(self,model,someset):
