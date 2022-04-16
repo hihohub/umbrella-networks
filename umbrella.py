@@ -24,7 +24,7 @@ import time
 
 class Joint_Probability_Network(object):
 
-  def __init__(self,network_type,images_folder,serial_file,models_folder,target_image_size,channels,levels,valid_ratio,test_ratio,initialize_now):
+  def __init__(self,images_folder,serial_file,models_folder,target_image_size,channels,valid_ratio,test_ratio):
     self.map = []
     network_type = "softmax"
     levels = 1
