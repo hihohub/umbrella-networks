@@ -445,7 +445,17 @@ class Umbrella_Network(object):
     self.get_test_set()
     self.trim_validation_set()
 
-  # save functions, could rewrite, presently deletes all models before saving images
+  # simplified save and load functions
+
+  def save(self): # always save models before saving images
+     self.save_models()
+     self.save_images()
+
+  def load(self): # always load images before loading models
+     self.load_images()
+     self.load_models()
+
+  # deletes all models before saving images
 
   # before save data
   def remove_models(self,node=None):
@@ -476,7 +486,7 @@ class Umbrella_Network(object):
     else:
       print("file not loaded\n")
 
-  # saves less data
+  # saves less data, also doesn't delete models, possibly should replace previous save image functions
   def save_just_images(self,path=None):
     if path==None:
       path = self.SERIAL_FILE
