@@ -324,6 +324,9 @@ class Umbrella_Network(object):
 
   def get_logits(self,label):
     logits = []
+    var levels = self.LEVELS
+    if self.NETWORK_TYPE=="sigmoid":
+       levels -= 1
     # breadth first search
     queue = []
     del queue[:]
@@ -332,7 +335,7 @@ class Umbrella_Network(object):
       node = queue.pop()
       depth = self.get_depth_to_root_label(node);
       # visit node
-      if depth==self.LEVELS:
+      if depth==levels:
         if len(node.children) > 0 and len(node.probability) != 0:
           logits.extend(list(node.probability))
       else:
