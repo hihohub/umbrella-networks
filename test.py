@@ -1142,6 +1142,7 @@ class Umbrella_Network(object):
       predicted_name = self.temp
       if verbose==True:
         self.traverse_validation_label(predicted_labels[i])
+        print("logits %s" % str(self.get_logits(predicted_labels[i])));
       if valid_name==predicted_name:
         accuracies.append(1)
       else:
