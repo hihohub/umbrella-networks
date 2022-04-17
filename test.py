@@ -332,7 +332,7 @@ class Umbrella_Network(object):
       # visit node
       if depth==self.LEVELS:
         if len(node.children) > 0 and len(node.probability) != 0:
-          logits.append(node.probability)
+          logits.extend(list(node.probability))
       else:
         for c in range(0,len(node.children)):
           if len(node.children[c].children) > 0:
