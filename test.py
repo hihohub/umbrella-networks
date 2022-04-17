@@ -326,7 +326,7 @@ class Umbrella_Network(object):
     logits = []
     levels = self.LEVELS
     if self.NETWORK_TYPE=="sigmoid":
-       levels -= 1
+       levels -= 2
     # breadth first search
     queue = []
     del queue[:]
