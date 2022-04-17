@@ -324,7 +324,7 @@ class Umbrella_Network(object):
 
   def get_logits(self,label):
     logits = []
-    var levels = self.LEVELS
+    levels = self.LEVELS
     if self.NETWORK_TYPE=="sigmoid":
        levels -= 1
     # breadth first search
