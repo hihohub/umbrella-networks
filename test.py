@@ -159,8 +159,8 @@ class Joint_Probability_Network(object):
         expanded[i][cumulative[j-1]:cumulative[j]] = [ps[i][j-1]] * len(expanded[i][cumulative[j-1]:cumulative[j]])
     #print("expanded specialist")
     #print(str(expanded))
-    predicted = [list(np.array(pg[j]) * np.array(expanded[j])) for j in range(0,len(expanded))]
-    predicted = [self.softmax_vector(predicted[j]) for j in range(0,len(predicted))]
+    logits = [list(np.array(pg[j]) * np.array(expanded[j])) for j in range(0,len(expanded))]
+    predicted = [self.softmax_vector(logits[j]) for j in range(0,len(logits))]
     print("Joint probability")
     #print("generalist predictions")
     #print(str(pg))
@@ -169,7 +169,9 @@ class Joint_Probability_Network(object):
     if verbose==True:
        print("expected %s" % str(expected))
        print("predicted %s" % str(predicted))
+       print("logits %s" % str(logits))
     print("accuracy %.3f" % self.accuracy(expected,predicted))
+    return logits
 
   def predict_set(self,model,someset):
     valid_labels = [node.validation_label for node in someset]
@@ -1112,10 +1114,10 @@ class Umbrella_Network(object):
         self.get_prediction_from_label(label.children[c],verbose)
 
   def predict_validation_set(self,verbose=False):
-    self.predict_set(self.validation_set,verbose)
+    return self.predict_set(self.validation_set,verbose)
   
   def predict_test_set(self,verbose=False):
-    self.predict_set(self.test_set,verbose)
+    return self.predict_set(self.test_set,verbose)
   
   # print average network loss, accuracy, and precision for all samples in someset
   def predict_set(self,someset,verbose=False):
@@ -1125,6 +1127,7 @@ class Umbrella_Network(object):
     print(len(someset))
     valid_name = "x"
     predicted_name = "y"
+    logits = []
     for i in range(0,len(someset)):
       if verbose==True:
         data = someset[i].data
@@ -1140,9 +1143,11 @@ class Umbrella_Network(object):
         print("\npredicted")
       self.get_prediction_from_label(predicted_labels[i],verbose)
       predicted_name = self.temp
+      logs = self.get_logits(predicted_labels[i])
+      logits.append(logs)
       if verbose==True:
         self.traverse_validation_label(predicted_labels[i])
-        print("logits %s" % str(self.get_logits(predicted_labels[i])));
+        print("logits %s" % str(logs))
       if valid_name==predicted_name:
         accuracies.append(1)
       else:
@@ -1155,6 +1160,7 @@ class Umbrella_Network(object):
     elif someset==self.test_set:
       print("")
       print("average test accuracy %f" % (average_validation_accuracy))
+    return logits
 
   # find top n results by flattening tree-shaped labels into 1-d lists
   # option for strict results, only if above the baseline for each sublist
