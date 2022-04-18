@@ -363,7 +363,7 @@ class Umbrella_Network(object):
       parent = parent.parent
     return depth
 
-  def get_logits(self,label):
+  def get_logits(self,predicted_label,valid_label):
     logits = []
     levels = self.LEVELS
     if self.NETWORK_TYPE=="sigmoid":
@@ -371,18 +371,24 @@ class Umbrella_Network(object):
     # breadth first search
     queue = []
     del queue[:]
-    queue.insert(0,label)
+    queue.insert(0,predicted_label)
+    vq.insert(0,valid_label)
     while len(queue) > 0:
       node = queue.pop()
+      vn = vq.pop()
       depth = self.get_depth_to_root_label(node);
       # visit node
       if depth==levels:
         if len(node.children) > 0 and len(node.probability) != 0:
-          logits.extend(list(node.probability))
+          if np.max(vn.probability)==1:
+          	logits.extend(list(node.probability))
+          else:
+          	logits.extend(list(vn.probability))
       else:
         for c in range(0,len(node.children)):
           if len(node.children[c].children) > 0:
             queue.insert(0,node.children[c])
+            vq.insert(0,vn.children[c])
     return logits
 
   # umbrella node functions
