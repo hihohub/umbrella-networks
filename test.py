@@ -371,6 +371,8 @@ class Umbrella_Network(object):
     # breadth first search
     queue = []
     del queue[:]
+    vq = []
+    del vq[:]
     queue.insert(0,predicted_label)
     vq.insert(0,valid_label)
     while len(queue) > 0:
