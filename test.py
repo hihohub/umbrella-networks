@@ -368,6 +368,19 @@ class Umbrella_Network(object):
     levels = self.LEVELS
     if self.NETWORK_TYPE=="sigmoid":
        levels -= 2
+    # depth first search
+    node = predicted_label
+    node.max = True
+    level = 1
+    while level <= levels:
+       max_index = np.argmax(node.probability)
+       for c in range(0,len(node.children)):
+          if c==max_index:
+             break
+       child = node.children[c]
+       node = child
+       node.max = True
+       level += 1
     # breadth first search
     queue = []
     del queue[:]
@@ -382,7 +395,7 @@ class Umbrella_Network(object):
       # visit node
       if depth==levels:
         if len(node.children) > 0 and len(node.probability) != 0:
-          if np.max(vn.probability)==1:
+          if node.max==True:#np.max(vn.probability)==1:
           	logits.extend(list(node.probability))
           else:
           	logits.extend(list(vn.probability))
