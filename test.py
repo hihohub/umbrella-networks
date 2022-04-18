@@ -130,7 +130,7 @@ class Joint_Probability_Network(object):
     ps = [self.softmax_vector(ps[j]) for j in range(0,len(ps))]
     if verbose==True:
        print("predicted %s" % str(ps))
-       print("logits %s" % str([self.specialist.get_logits(j) for j in predicted_specialist]))
+       print("logits %s" % str([self.specialist.get_logits(predicted_specialist[j],valid_specialist[j]) for j in range(0,len(predicted_specialist))]))
     print("accuracy %.3f" % self.accuracy(es,ps))
     #self.specialist.traverse_validation_labels()
     print("generalist")
@@ -141,7 +141,7 @@ class Joint_Probability_Network(object):
     pg = [self.softmax_vector(pg[j]) for j in range(0,len(pg))]
     if verbose==True:
        print("predicted %s" % str(pg))
-       print("logits %s" % str([self.generalist.get_logits(j) for j in predicted_general]))
+       print("logits %s" % str([self.generalist.get_logits(predicted_general[j],valid_general[j]) for j in range(0,len(predicted_general))]))
     print("accuracy %.3f" % self.accuracy(expected,pg))
     #self.generalist.traverse_validation_labels()
     #print("map")
@@ -185,7 +185,7 @@ class Joint_Probability_Network(object):
     ps = [self.softmax_vector(ps[j]) for j in range(0,len(ps))]
     if verbose==True:
        print("predicted %s" % str(ps))
-       print("logits %s" % str([self.specialist.get_logits(j) for j in predicted_specialist]))
+       print("logits %s" % str([self.specialist.get_logits(predicted_specialist[j],valid_specialist[j]) for j in range(0,len(predicted_specialist))]))
     print("accuracy %.3f" % self.accuracy(es,ps))
     print("generalist")
     expected = [list(valid_general[j].probability) for j in range(0,len(valid_general))]
@@ -195,7 +195,7 @@ class Joint_Probability_Network(object):
     pg = [self.softmax_vector(pg[j]) for j in range(0,len(pg))]
     if verbose==True:
        print("predicted %s" % str(pg))
-       print("logits %s" % str([self.generalist.get_logits(j) for j in predicted_general]))
+       print("logits %s" % str([self.generalist.get_logits(predicted_general[j],valid_general[j]) for j in range(0,len(predicted_general))]))
     print("accuracy %.3f" % self.accuracy(expected,pg))
     cumulative = [0]
     for i in range(1,len(self.map)+1):
@@ -1203,7 +1203,7 @@ class Umbrella_Network(object):
         print("\npredicted")
       self.get_prediction_from_label(predicted_labels[i],verbose)
       predicted_name = self.temp
-      logs = self.get_logits(predicted_labels[i])
+      logs = self.get_logits(predicted_labels[i],valid_labels[i])
       logits.append(logs)
       if verbose==True:
         self.traverse_validation_label(predicted_labels[i])
