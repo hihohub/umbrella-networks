@@ -9,6 +9,7 @@ convolutional neural network system for hierarchically ordered images
 - - - simplify reading image files from a hierarchical file structure
 - - - construct hierarchical ensembles that predict with traversal by maximum
 - - - construct joint probability ensembles
+- - - test different ensemble architectures to find what's right for your data
 - - - build a regular flat softmax from the bottom folders of a hierarchical file structure
 - instructions
 - - place all of your images into a root folder
@@ -21,7 +22,7 @@ convolutional neural network system for hierarchically ordered images
 - - for example, you may set levels = 0 or 1 for any folder structure
 - classes
 - - Umbrella Network is the main class
-- - Joint Probability Network is an ensemble of two umbrella networks whose predicted probabilities are multiplied
+- - Joint Probability Network is an ensemble of two umbrella networks, upper level and lower level, whose predicted probabilities are multiplied
 - network architecture
 - - although an umbrella network contains multiple models, each of them has the exact same architecture
 - - two types of umbrella network architectures are available, 'sigmoid' and 'softmax'
