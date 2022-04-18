@@ -130,7 +130,7 @@ class Joint_Probability_Network(object):
     ps = [self.softmax_vector(ps[j]) for j in range(0,len(ps))]
     if verbose==True:
        print("predicted %s" % str(ps))
-       print("logits %s" % str([self.specialist.get_logits(j) for j in predicted_specialist]))
+       print("logits %s" % str([self.specialist.get_logits(predicted_specialist[j],valid_specialist[j]) for j in range(0,len(predicted_specialist))]))
     print("accuracy %.3f" % self.accuracy(es,ps))
     #self.specialist.traverse_validation_labels()
     print("generalist")
@@ -141,7 +141,7 @@ class Joint_Probability_Network(object):
     pg = [self.softmax_vector(pg[j]) for j in range(0,len(pg))]
     if verbose==True:
        print("predicted %s" % str(pg))
-       print("logits %s" % str([self.generalist.get_logits(j) for j in predicted_general]))
+       print("logits %s" % str([self.generalist.get_logits(predicted_general[j],valid_general[j]) for j in range(0,len(predicted_general))]))
     print("accuracy %.3f" % self.accuracy(expected,pg))
     #self.generalist.traverse_validation_labels()
     #print("map")
@@ -185,7 +185,7 @@ class Joint_Probability_Network(object):
     ps = [self.softmax_vector(ps[j]) for j in range(0,len(ps))]
     if verbose==True:
        print("predicted %s" % str(ps))
-       print("logits %s" % str([self.specialist.get_logits(j) for j in predicted_specialist]))
+       print("logits %s" % str([self.specialist.get_logits(predicted_specialist[j],valid_specialist[j]) for j in range(0,len(predicted_specialist))]))
     print("accuracy %.3f" % self.accuracy(es,ps))
     print("generalist")
     expected = [list(valid_general[j].probability) for j in range(0,len(valid_general))]
@@ -195,7 +195,7 @@ class Joint_Probability_Network(object):
     pg = [self.softmax_vector(pg[j]) for j in range(0,len(pg))]
     if verbose==True:
        print("predicted %s" % str(pg))
-       print("logits %s" % str([self.generalist.get_logits(j) for j in predicted_general]))
+       print("logits %s" % str([self.generalist.get_logits(predicted_general[j],valid_general[j]) for j in range(0,len(predicted_general))]))
     print("accuracy %.3f" % self.accuracy(expected,pg))
     cumulative = [0]
     for i in range(1,len(self.map)+1):
@@ -225,6 +225,7 @@ class Umbrella_Label(object):
     self.name = ""
     self.children = []
     self.parent = None
+    self.max = False
 
 class Umbrella_Node(object):
   def __init__(self,path,parent):
@@ -363,26 +364,60 @@ class Umbrella_Network(object):
       parent = parent.parent
     return depth
 
-  def get_logits(self,label):
+  def get_logits(self,predicted_label,valid_label):
     logits = []
     levels = self.LEVELS
     if self.NETWORK_TYPE=="sigmoid":
        levels -= 2
+    # depth first search
+    node = predicted_label
+    node.max = True
+    level = 1
+    while level <= levels:
+       max_index = np.argmax(node.probability)
+       for c in range(0,len(node.children)):
+          if c==max_index:
+             break
+       child = node.children[c]
+       node = child
+       node.max = True
+       level += 1
     # breadth first search
     queue = []
     del queue[:]
-    queue.insert(0,label)
+    vq = []
+    del vq[:]
+    queue.insert(0,predicted_label)
+    vq.insert(0,valid_label)
     while len(queue) > 0:
       node = queue.pop()
+      vn = vq.pop()
       depth = self.get_depth_to_root_label(node);
       # visit node
       if depth==levels:
         if len(node.children) > 0 and len(node.probability) != 0:
-          logits.extend(list(node.probability))
+          if node.max==True:#np.max(vn.probability)==1:
+          	logits.extend(list(node.probability))
+          else:
+          	logits.extend([0] * len(vn.probability))
       else:
         for c in range(0,len(node.children)):
           if len(node.children[c].children) > 0:
             queue.insert(0,node.children[c])
+            vq.insert(0,vn.children[c])
+    # reset 
+    node = predicted_label
+    node.max = False 
+    level = 1
+    while level <= levels:
+       max_index = np.argmax(node.probability)
+       for c in range(0,len(node.children)):
+          if c==max_index:
+             break
+       child = node.children[c]
+       node = child
+       node.max = False
+       level += 1
     return logits
 
   # umbrella node functions
@@ -1197,7 +1232,7 @@ class Umbrella_Network(object):
         print("\npredicted")
       self.get_prediction_from_label(predicted_labels[i],verbose)
       predicted_name = self.temp
-      logs = self.get_logits(predicted_labels[i])
+      logs = self.get_logits(predicted_labels[i],valid_labels[i])
       logits.append(logs)
       if verbose==True:
         self.traverse_validation_label(predicted_labels[i])
