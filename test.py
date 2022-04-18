@@ -225,6 +225,7 @@ class Umbrella_Label(object):
     self.name = ""
     self.children = []
     self.parent = None
+    self.max = False
 
 class Umbrella_Node(object):
   def __init__(self,path,parent):
