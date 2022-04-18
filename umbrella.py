@@ -173,6 +173,47 @@ class Joint_Probability_Network(object):
     print("accuracy %.3f" % self.accuracy(expected,predicted))
     return logits
 
+  def predict_test_set(self,verbose=False):
+    print("test accuracy")
+    valid_specialist,predicted_specialist = self.predict_set(self.specialist,self.specialist.test_set);
+    valid_general,predicted_general = self.predict_set(self.generalist,self.generalist.test_set);
+    print("specialist")
+    es = [list(valid_specialist[j].probability) for j in range(0,len(valid_specialist))]
+    if verbose==True:
+       print("expected %s" % str(es))
+    ps = [list(predicted_specialist[j].probability) for j in range(0,len(predicted_specialist))]
+    ps = [self.softmax_vector(ps[j]) for j in range(0,len(ps))]
+    if verbose==True:
+       print("predicted %s" % str(ps))
+       print("logits %s" % str([self.specialist.get_logits(j) for j in predicted_specialist]))
+    print("accuracy %.3f" % self.accuracy(es,ps))
+    print("generalist")
+    expected = [list(valid_general[j].probability) for j in range(0,len(valid_general))]
+    if verbose==True:
+       print("expected %s" % str(expected))
+    pg = [list(predicted_general[j].probability) for j in range(0,len(predicted_general))]
+    pg = [self.softmax_vector(pg[j]) for j in range(0,len(pg))]
+    if verbose==True:
+       print("predicted %s" % str(pg))
+       print("logits %s" % str([self.generalist.get_logits(j) for j in predicted_general]))
+    print("accuracy %.3f" % self.accuracy(expected,pg))
+    cumulative = [0]
+    for i in range(1,len(self.map)+1):
+      cumulative.append(self.map[i-1] + cumulative[i-1])
+    expanded = [[0] * len(pg[0]) for j in range(0,len(ps))]
+    for i in range(0,len(expanded)):
+      for j in range(1,len(cumulative)):
+        expanded[i][cumulative[j-1]:cumulative[j]] = [ps[i][j-1]] * len(expanded[i][cumulative[j-1]:cumulative[j]])
+    logits = [list(np.array(pg[j]) * np.array(expanded[j])) for j in range(0,len(expanded))]
+    predicted = [self.softmax_vector(logits[j]) for j in range(0,len(logits))]
+    print("Joint probability")
+    if verbose==True:
+       print("expected %s" % str(expected))
+       print("predicted %s" % str(predicted))
+       print("logits %s" % str(logits))
+    print("accuracy %.3f" % self.accuracy(expected,predicted))
+    return logits
+
   def predict_set(self,model,someset):
     valid_labels = [node.validation_label for node in someset]
     predicted_labels = model.predict_models(someset)
