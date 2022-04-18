@@ -399,12 +399,25 @@ class Umbrella_Network(object):
           if node.max==True:#np.max(vn.probability)==1:
           	logits.extend(list(node.probability))
           else:
-          	logits.extend(list(vn.probability))
+          	logits.extend([0] * len(vn.probability))
       else:
         for c in range(0,len(node.children)):
           if len(node.children[c].children) > 0:
             queue.insert(0,node.children[c])
             vq.insert(0,vn.children[c])
+    # reset 
+    node = predicted_label
+    node.max = False 
+    level = 1
+    while level <= levels:
+       max_index = np.argmax(node.probability)
+       for c in range(0,len(node.children)):
+          if c==max_index:
+             break
+       child = node.children[c]
+       node = child
+       node.max = False
+       level += 1
     return logits
 
   # umbrella node functions
