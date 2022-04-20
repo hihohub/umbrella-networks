@@ -16,6 +16,7 @@ convolutional neural network system for hierarchically ordered images
 - - organize your images into subfolders by class
 - - if desired, organize those subfolders into higher level folders
 - - use as many levels as you like
+- - all folders must have unique names
 - - when initializing the umbrella network, set levels = 0 for a regular softmax over all classes (the program ignores the higher folders), set levels = 1 to predict just the outer level clusters, set levels > 1 to predict first the outer level cluster, then the specific inner layer class, i.e. the outer level folders each contain subfolders, one for each class
 - - the subfolders may also contain their own subfolders, and the umbrella network predicts as many levels as you specify in the 'levels' setting
 - - if levels is non-zero and set to less than the number of layers of folders, the program compresses the lower level folders into the upper level folders, keeping all of the images
@@ -40,7 +41,8 @@ convolutional neural network system for hierarchically ordered images
 - - load the images from the repository yourself, and, if you want a multi-level network, organize them into clusters of classes
 - - keep track of the labels and class names, but you won't need to pass the labels to the umbrella network...it makes its own labels...for example, if MNIST is organized into odd (0,2,4,6,8) and even (1,3,5,7,9), the labels for both are (0,1,2,3,4). How will you know which is which? Each node in the umbrella network keeps track of its class 'name', which is sometimes simply the folder name or the path to the folder. For a repository, you set the class names when you initialize each node. 
 - prediction
-- - When predicting, to see the names of the predicted classes, set 'verbose=True' when invoking the predict_validation_set or predict_test_set functions. However, then the size of the validation and test sets should be set small, since every image and its predicted class name will be displayed.
+- - all folders (classes) must have unique names, and accuracy is determined by comparing the predicted name with the expected name...any repeated names could result in false positives
+- - when predicting, to see the names of the predicted classes, set 'verbose=True' when invoking the predict_validation_set or predict_test_set functions. However, then the size of the validation and test sets should be set small, since every image and its predicted class name will be displayed.
 - - for all architectures except joint probability, prediction is performed with traversal by maximum...the maximum prediction at the first level selects the subset for prediction at the next level, and that process is repeated to the specified number of levels, then the prediction of the last level is taken
 - - for joint probability, both models are flat, and prediction is performed by multiplying their probabilities, then taking the maximum prediction
 - - neither 'sigmoid' nor 'softmax' has a single model that predicts every class, unless the architecture is 'softmax' with levels = 0. For sigmoid, if the number of levels is set to reach the bottom level, then a model will be made for every class, with the returned logits being the same as for a softmax over those classes.
